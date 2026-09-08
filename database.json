@@ -1,0 +1,45 @@
+{
+  "settings": {
+    "appName": "Tolunay Auth",
+    "adminUser": "Tolunay",
+    "adminPass": "tolunay123",
+    "secretKey": "tolunay_secret_9f90cd0131aa",
+    "enabled": true
+  },
+  "keys": [
+    {
+      "id": "key_1",
+      "key": "TOLUNAY-VIP-DEMO-2026",
+      "durationDays": 30,
+      "hwid": null,
+      "ip": "::1",
+      "status": "used",
+      "createdAt": "2026-09-08T11:28:10.914Z",
+      "usedAt": "2026-09-08T11:28:19.265Z",
+      "expiresAt": "2026-10-08T11:28:19.265Z",
+      "note": "Demo VIP Key"
+    },
+    {
+      "id": "key_2",
+      "key": "TOLUNAY-LIFETIME-ACCESS",
+      "durationDays": 9999,
+      "hwid": null,
+      "ip": null,
+      "status": "unused",
+      "createdAt": "2026-09-08T11:28:10.915Z",
+      "usedAt": null,
+      "expiresAt": null,
+      "note": "Lifetime Access"
+    }
+  ],
+  "logs": [
+    {
+      "id": "log_1788866899265",
+      "key": "TOLUNAY-VIP-DEMO-2026",
+      "hwid": "TEST-HWID-12345",
+      "ip": "::1",
+      "time": "2026-09-08T11:28:19.265Z",
+      "note": "Demo VIP Key"
+    }
+  ]
+}
