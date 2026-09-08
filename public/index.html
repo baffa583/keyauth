@@ -1,0 +1,431 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tolunay Auth - Licensing Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0e14',
+                        cardBg: '#121722',
+                        sidebarBg: '#0e121a',
+                        borderCol: '#1e2638',
+                        brandPurple: '#6366f1',
+                        brandHover: '#4f46e5'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0e14;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #0e121a;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #252e42;
+            border-radius: 4px;
+        }
+        .glow-brand {
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginSection" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0b0e14]/90 backdrop-blur-md">
+        <div class="w-full max-w-md p-8 bg-[#121722] border border-[#1e2638] rounded-2xl shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto mb-4 bg-indigo-600/20 border border-indigo-500/40 rounded-2xl flex items-center justify-center text-indigo-400 text-2xl font-bold glow-brand">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">Tolunay Auth</h1>
+                <p class="text-sm text-slate-400 mt-1">License & HWID Management Panel</p>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Username</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-user text-sm"></i></span>
+                        <input type="text" id="loginUser" required class="w-full pl-10 pr-4 py-2.5 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition" placeholder="Tolunay">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-lock text-sm"></i></span>
+                        <input type="password" id="loginPass" required class="w-full pl-10 pr-4 py-2.5 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition" placeholder="••••••••">
+                    </div>
+                </div>
+                <div id="loginError" class="hidden text-red-400 text-xs text-center py-1"></div>
+                <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg shadow-indigo-600/30 transition duration-200">
+                    Sign In
+                </button>
+            </form>
+            <div class="mt-6 text-center text-xs text-slate-500">
+                Default: <span class="text-slate-300">Tolunay</span> / <span class="text-slate-300">tolunay123</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP DASHBOARD -->
+    <div id="appSection" class="hidden flex-1 flex overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-[#0e121a] border-r border-[#1e2638] flex flex-col justify-between flex-shrink-0">
+            <div>
+                <!-- Brand -->
+                <div class="h-16 flex items-center px-6 border-b border-[#1e2638] gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow glow-brand">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-white text-base tracking-wide">KeyAuth</span>
+                        <span class="text-[10px] bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 px-1.5 py-0.5 rounded ml-1 font-semibold">TOLUNAY</span>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="p-4 space-y-1.5 text-sm">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-indigo-400 bg-indigo-600/10 font-medium transition">
+                        <i class="fa-solid fa-chart-pie w-5"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <button onclick="switchTab('licenses')" id="nav-licenses" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium transition">
+                        <i class="fa-solid fa-key w-5"></i>
+                        <span>Licenses (Keys)</span>
+                    </button>
+                    <button onclick="switchTab('users')" id="nav-users" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium transition">
+                        <i class="fa-solid fa-users w-5"></i>
+                        <span>Active Users / Logs</span>
+                    </button>
+                    <button onclick="switchTab('api')" id="nav-api" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/40 font-medium transition">
+                        <i class="fa-solid fa-code w-5"></i>
+                        <span>API Integration</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- User Info Footer -->
+            <div class="p-4 border-t border-[#1e2638] flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-indigo-400">
+                        TL
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white leading-none">Tolunay</div>
+                        <div class="text-[10px] text-emerald-400 font-medium">Administrator</div>
+                    </div>
+                </div>
+                <button onclick="logout()" title="Logout" class="p-2 text-slate-400 hover:text-red-400 transition">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 flex flex-col overflow-y-auto custom-scroll bg-[#0b0e14]">
+            
+            <!-- Topbar -->
+            <header class="h-16 border-b border-[#1e2638] bg-[#0e121a]/60 backdrop-blur flex items-center justify-between px-8">
+                <div class="flex items-center gap-3">
+                    <h2 id="pageTitle" class="text-lg font-bold text-white">Dashboard Overview</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        API Online (v1.0)
+                    </span>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-8 flex-1">
+
+                <!-- TAB 1: DASHBOARD OVERVIEW -->
+                <div id="tab-dashboard" class="space-y-6">
+                    <!-- Stat Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="p-5 bg-[#121722] border border-[#1e2638] rounded-xl relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-xs font-medium text-slate-400">Total Keys</div>
+                                    <div id="statTotal" class="text-2xl font-bold text-white mt-1">0</div>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-key"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-[#121722] border border-[#1e2638] rounded-xl relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-xs font-medium text-slate-400">Active / Used Keys</div>
+                                    <div id="statUsed" class="text-2xl font-bold text-emerald-400 mt-1">0</div>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-[#121722] border border-[#1e2638] rounded-xl relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-xs font-medium text-slate-400">Unused Keys</div>
+                                    <div id="statUnused" class="text-2xl font-bold text-amber-400 mt-1">0</div>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-clock"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-[#121722] border border-[#1e2638] rounded-xl relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <div class="text-xs font-medium text-slate-400">Banned Keys</div>
+                                    <div id="statBanned" class="text-2xl font-bold text-rose-400 mt-1">0</div>
+                                </div>
+                                <div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center text-lg">
+                                    <i class="fa-solid fa-ban"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions & Recent Logins -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Quick Generator -->
+                        <div class="p-6 bg-[#121722] border border-[#1e2638] rounded-xl space-y-4">
+                            <h3 class="font-bold text-white text-base flex items-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles text-indigo-400"></i> Quick Generate Key
+                            </h3>
+                            <div>
+                                <label class="text-xs font-medium text-slate-400">Duration</label>
+                                <select id="quickDuration" class="w-full mt-1 px-3 py-2 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500">
+                                    <option value="1">1 Day</option>
+                                    <option value="7">7 Days (1 Week)</option>
+                                    <option value="30" selected>30 Days (1 Month)</option>
+                                    <option value="90">90 Days (3 Months)</option>
+                                    <option value="9999">Lifetime (Unlimited)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-medium text-slate-400">Key Note / Tag</label>
+                                <input type="text" id="quickNote" placeholder="e.g. VIP Customer Eren" class="w-full mt-1 px-3 py-2 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <button onclick="generateKeys(1, document.getElementById('quickDuration').value, document.getElementById('quickNote').value)" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg text-sm transition">
+                                <i class="fa-solid fa-plus mr-1"></i> Generate 1 Key
+                            </button>
+                        </div>
+
+                        <!-- Recent Login Activity -->
+                        <div class="lg:col-span-2 p-6 bg-[#121722] border border-[#1e2638] rounded-xl space-y-4">
+                            <h3 class="font-bold text-white text-base flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> Recent User Logins
+                            </h3>
+                            <div class="overflow-x-auto custom-scroll">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="text-slate-400 border-b border-[#1e2638]">
+                                        <tr>
+                                            <th class="pb-2">License Key</th>
+                                            <th class="pb-2">HWID</th>
+                                            <th class="pb-2">IP Address</th>
+                                            <th class="pb-2">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentLoginsBody" class="divide-y divide-[#1e2638] text-slate-300">
+                                        <!-- Rendered via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: LICENSES (KEYS) -->
+                <div id="tab-licenses" class="hidden space-y-6">
+                    <!-- Action Bar -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#121722] p-4 border border-[#1e2638] rounded-xl">
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <div class="relative flex-1 sm:w-64">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-search text-xs"></i></span>
+                                <input type="text" id="searchKeys" oninput="filterKeys()" placeholder="Search key, HWID or note..." class="w-full pl-9 pr-4 py-1.5 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <select id="filterStatus" onchange="filterKeys()" class="px-3 py-1.5 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-xs text-white focus:outline-none">
+                                <option value="all">All Status</option>
+                                <option value="unused">Unused</option>
+                                <option value="used">Used / Active</option>
+                                <option value="banned">Banned</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="openModal('generateModal')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-lg shadow-indigo-600/20 transition">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Create Multiple Keys</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Keys Table -->
+                    <div class="bg-[#121722] border border-[#1e2638] rounded-xl overflow-hidden shadow">
+                        <div class="overflow-x-auto custom-scroll">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-[#0e121a] text-slate-400 border-b border-[#1e2638]">
+                                    <tr>
+                                        <th class="p-3.5">License Key</th>
+                                        <th class="p-3.5">Status</th>
+                                        <th class="p-3.5">Duration</th>
+                                        <th class="p-3.5">Locked HWID</th>
+                                        <th class="p-3.5">Expires</th>
+                                        <th class="p-3.5">Note</th>
+                                        <th class="p-3.5 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="keysTableBody" class="divide-y divide-[#1e2638] text-slate-300">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: USERS & LOGS -->
+                <div id="tab-users" class="hidden space-y-6">
+                    <div class="bg-[#121722] border border-[#1e2638] rounded-xl p-6 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-white text-base flex items-center gap-2">
+                                <i class="fa-solid fa-list text-indigo-400"></i> Full Authorization Logs
+                            </h3>
+                            <button onclick="loadLogs()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs transition">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto custom-scroll">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-[#0e121a] text-slate-400 border-b border-[#1e2638]">
+                                    <tr>
+                                        <th class="p-3">Log ID</th>
+                                        <th class="p-3">License Key</th>
+                                        <th class="p-3">HWID</th>
+                                        <th class="p-3">IP Address</th>
+                                        <th class="p-3">Timestamp</th>
+                                        <th class="p-3">Note</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logsTableBody" class="divide-y divide-[#1e2638] text-slate-300">
+                                    <!-- Rendered via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: API INTEGRATION -->
+                <div id="tab-api" class="hidden space-y-6">
+                    <div class="p-6 bg-[#121722] border border-[#1e2638] rounded-xl space-y-4">
+                        <h3 class="font-bold text-white text-base flex items-center gap-2">
+                            <i class="fa-solid fa-code text-indigo-400"></i> Client API Integration
+                        </h3>
+                        <p class="text-xs text-slate-400">
+                            You can connect any client (C#, Python, C++, etc.) to your Tolunay Auth server.
+                        </p>
+
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs font-semibold text-slate-300 uppercase">Verification Endpoint</label>
+                                <div class="mt-1 p-3 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-xs font-mono text-indigo-300 flex justify-between items-center">
+                                    <span id="endpointUrl">http://YOUR_SERVER_URL/api/v1/verify?key=...&hwid=...</span>
+                                    <button onclick="copyToClipboard(document.getElementById('endpointUrl').innerText)" class="text-slate-400 hover:text-white"><i class="fa-regular fa-copy"></i></button>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-semibold text-slate-300 uppercase">Example JSON Request (POST)</label>
+                                <pre class="mt-1 p-3 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-xs font-mono text-slate-300 overflow-x-auto">{
+  "key": "TOLUNAY-XXXX-XXXX",
+  "hwid": "USER-MOTHERBOARD-UUID"
+}</pre>
+                            </div>
+
+                            <div>
+                                <label class="text-xs font-semibold text-slate-300 uppercase">Example JSON Response</label>
+                                <pre class="mt-1 p-3 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-xs font-mono text-emerald-400 overflow-x-auto">{
+  "success": true,
+  "message": "License valid! Welcome, user.",
+  "key": "TOLUNAY-XXXX-XXXX",
+  "hwid": "USER-MOTHERBOARD-UUID",
+  "expires": "2026-10-08T12:00:00.000Z",
+  "daysLeft": 30,
+  "admin": "Tolunay"
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- GENERATE MODAL -->
+    <div id="generateModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-sm">
+        <div class="w-full max-w-md p-6 bg-[#121722] border border-[#1e2638] rounded-xl shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-[#1e2638] pb-3">
+                <h3 class="text-sm font-bold text-white">Generate License Keys</h3>
+                <button onclick="closeModal('generateModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-medium text-slate-300 mb-1">Key Prefix</label>
+                    <input type="text" id="genPrefix" value="TOLUNAY" class="w-full px-3 py-2 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-300 mb-1">Amount to Generate</label>
+                    <input type="number" id="genCount" value="5" min="1" max="100" class="w-full px-3 py-2 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-white">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-300 mb-1">License Duration (Days)</label>
+                    <select id="genDuration" class="w-full px-3 py-2 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-white">
+                        <option value="1">1 Day</option>
+                        <option value="3">3 Days</option>
+                        <option value="7">7 Days (1 Week)</option>
+                        <option value="30" selected>30 Days (1 Month)</option>
+                        <option value="90">90 Days</option>
+                        <option value="365">365 Days (1 Year)</option>
+                        <option value="9999">Lifetime</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-300 mb-1">Note (Optional)</label>
+                    <input type="text" id="genNote" placeholder="e.g. Discord Giveaway" class="w-full px-3 py-2 bg-[#0b0e14] border border-[#1e2638] rounded-lg text-white">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 border-t border-[#1e2638]">
+                <button onclick="closeModal('generateModal')" class="px-4 py-2 bg-slate-800 text-slate-300 hover:bg-slate-700 rounded-lg text-xs">Cancel</button>
+                <button onclick="submitGenerateModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg text-xs">Generate Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script src="/js/app.js"></script>
+</body>
+</html>
